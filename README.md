@@ -130,3 +130,57 @@ carcara-strapi/
 - Documentação Strapi: https://docs.strapi.io
 - API Endpoint: `/api/blog-posts`
 - Admin Panel: `/admin`
+
+## 🔧 Configurações Automáticas
+
+Este projeto já vem com:
+
+✅ **Blog Post Content Type** configurado
+✅ **Permissões públicas** para blog posts (configuradas automaticamente no bootstrap)
+✅ **CORS** configurado para carcara.ai
+✅ **PostgreSQL** como banco de dados
+✅ **Uploads** de imagens funcionando
+
+## 📌 Após o Deploy
+
+1. Acesse `/admin` e crie seu usuário administrador
+2. Gere um API Token em **Settings** → **API Tokens**:
+   - Name: `Frontend Token`
+   - Type: **Read-only**
+   - Duration: **Unlimited**
+3. Adicione o token nas variáveis de ambiente da Landing Page
+
+## 🎯 API Endpoints
+
+- **GET** `/api/blog-posts` - Lista todos os posts
+- **GET** `/api/blog-posts/:id` - Post específico por ID
+- **GET** `/api/blog-posts?filters[slug][$eq]=seu-slug` - Post por slug
+
+Exemplo de resposta:
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "attributes": {
+        "title": "Meu Post",
+        "slug": "meu-post",
+        "excerpt": "Resumo do post",
+        "content": "Conteúdo completo...",
+        "coverImage": {...},
+        "author": "Equipe Carcará",
+        "publishedAt": "2025-11-24T10:00:00.000Z"
+      }
+    }
+  ]
+}
+```
+
+## 🚀 Deploy Checklist
+
+- [x] Dockerfile configurado
+- [x] PostgreSQL como database
+- [x] Variáveis de ambiente configuradas
+- [x] Content Types criados
+- [x] Permissões públicas configuradas automaticamente
+- [x] CORS habilitado
