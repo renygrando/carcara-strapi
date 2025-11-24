@@ -6,8 +6,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install all dependencies (including pg)
+RUN npm ci
 
 # Copy source code
 COPY . .
@@ -21,7 +21,7 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy built application
+# Copy everything from build stage
 COPY --from=build /app .
 
 # Expose port
