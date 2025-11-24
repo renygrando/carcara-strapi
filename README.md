@@ -1,61 +1,132 @@
-# 🚀 Getting started with Strapi
+# Carcará Strapi CMS
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
+Backend headless CMS para o blog da Landing Page Carcará.
 
-### `develop`
+## 🚀 Deploy no Easypanel
 
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-develop)
+### 1. Criar PostgreSQL Database no Easypanel
 
+1. No Easypanel, vá em **Databases** → **Create Database**
+2. Escolha **PostgreSQL**
+3. Configure:
+   - Name: `carcara-strapi-db`
+   - Username: `strapi`
+   - Password: (gere uma senha segura)
+   - Database: `strapi`
+4. Deploy e anote as credenciais
+
+### 2. Criar App Strapi
+
+1. No Easypanel, vá em **Apps** → **Create App**
+2. Escolha **"From GitHub"**
+3. Configure:
+   - Repository: `renygrando/carcara-strapi`
+   - Branch: `main`
+   - Build Method: **Docker**
+   - Port: `1337`
+
+### 3. Configurar Environment Variables
+
+Adicione estas variáveis no Easypanel:
+
+```env
+DATABASE_CLIENT=postgres
+DATABASE_HOST=carcara-strapi-db  # Nome do serviço do PostgreSQL
+DATABASE_PORT=5432
+DATABASE_NAME=strapi
+DATABASE_USERNAME=strapi
+DATABASE_PASSWORD=sua_senha_segura
+DATABASE_SSL=false
+
+HOST=0.0.0.0
+PORT=1337
+NODE_ENV=production
+
+# Gere secrets únicos usando:
+# node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+APP_KEYS=key1,key2,key3,key4
+API_TOKEN_SALT=seu_salt
+ADMIN_JWT_SECRET=seu_secret
+TRANSFER_TOKEN_SALT=seu_salt
+JWT_SECRET=seu_secret
 ```
+
+### 4. Deploy
+
+1. Clique em **Deploy**
+2. Aguarde o build (5-10 minutos)
+3. Acesse a URL do Strapi
+
+## 📝 Configuração Inicial
+
+### Criar Admin User
+
+1. Acesse `https://seu-strapi.com/admin`
+2. Crie sua conta de administrador
+
+### Criar Content Type "Blog Post"
+
+1. **Content-Type Builder** → **Create new collection type**
+2. Nome: `blog-post`
+3. Adicione os campos:
+
+| Campo | Tipo | Config |
+|-------|------|--------|
+| title | Text (short) | Required |
+| slug | UID (attached to title) | Required, Unique |
+| excerpt | Text (short) | - |
+| content | Rich Text | Required |
+| coverImage | Media (Single) | - |
+| author | Text (short) | - |
+
+4. Save e aguarde reiniciar
+
+### Configurar Permissões
+
+1. **Settings** → **Users & Permissions** → **Roles** → **Public**
+2. Em Blog-post, marque:
+   - ✅ find
+   - ✅ findOne
+3. Save
+
+### Gerar API Token
+
+1. **Settings** → **API Tokens** → **Create new API Token**
+2. Configure:
+   - Name: `Frontend Token`
+   - Token type: **Read-only**
+   - Duration: **Unlimited**
+3. Save e copie o token
+
+## 🔧 Desenvolvimento Local
+
+```bash
+# Com Docker Compose
+docker-compose up -d
+
+# Ou localmente
+npm install
 npm run develop
-# or
-yarn develop
 ```
 
-### `start`
+Acesse: http://localhost:1337/admin
 
-Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-start)
-
-```
-npm run start
-# or
-yarn start
-```
-
-### `build`
-
-Build your admin panel. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-build)
+## 📦 Estrutura do Projeto
 
 ```
-npm run build
-# or
-yarn build
+carcara-strapi/
+├── Dockerfile              # Build para produção
+├── docker-compose.yml      # Setup local com PostgreSQL
+├── .env.example           # Template de variáveis
+├── config/                # Configurações do Strapi
+├── src/
+│   ├── api/              # APIs customizadas
+│   └── admin/            # Customizações do admin
+└── public/               # Assets públicos
 ```
 
-## ⚙️ Deployment
+## 🔗 Links
 
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
-
-```
-yarn strapi deploy
-```
-
-## 📚 Learn more
-
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
-- [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
-- [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
-- [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
-
-Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
-
-## ✨ Community
-
-- [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
-- [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
-- [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
-
----
-
-<sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+- Documentação Strapi: https://docs.strapi.io
+- API Endpoint: `/api/blog-posts`
+- Admin Panel: `/admin`

@@ -1,0 +1,49 @@
+services:
+  strapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: carcara-strapi:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: strapi
+      DATABASE_USERNAME: strapi
+      DATABASE_PASSWORD: strapi
+      DATABASE_SSL: false
+      JWT_SECRET: your-super-secret-jwt-key-change-this
+      ADMIN_JWT_SECRET: your-super-secret-admin-jwt-key-change-this
+      APP_KEYS: your-app-key-1,your-app-key-2,your-app-key-3,your-app-key-4
+      API_TOKEN_SALT: your-api-token-salt-change-this
+      TRANSFER_TOKEN_SALT: your-transfer-token-salt-change-this
+      NODE_ENV: production
+    volumes:
+      - ./public/uploads:/app/public/uploads
+    ports:
+      - '1337:1337'
+    depends_on:
+      - postgres
+    networks:
+      - strapi
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: strapi
+      POSTGRES_PASSWORD: strapi
+      POSTGRES_DB: strapi
+    volumes:
+      - strapi-data:/var/lib/postgresql/data
+    networks:
+      - strapi
+
+volumes:
+  strapi-data:
+
+networks:
+  strapi:
+    driver: bridge
